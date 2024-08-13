@@ -41,6 +41,7 @@ def print_top_ips(server_collection):
 
 
 def run():
+    '''this func will run the nginx in db'''
     client = MongoClient('mongodb://127.0.0.1:27017')
     print_nginx_request_logs(client.logs.nginx)
     print_top_ips(client.logs.nginx)
