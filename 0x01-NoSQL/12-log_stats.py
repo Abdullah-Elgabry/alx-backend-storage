@@ -19,6 +19,7 @@ def print_nginx_request_logs(nginx_collection):
 
 
 def run():
+    '''this func will run the nginx in db'''
     client = MongoClient('mongodb://127.0.0.1:27017')
     print_nginx_request_logs(client.logs.nginx)
 
