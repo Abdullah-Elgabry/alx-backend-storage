@@ -13,6 +13,7 @@ def data_cacher(method: Callable) -> Callable:
     '''This func will return the chash dta'''
     @wraps(method)
     def invoker(url) -> str:
+        '''This func will return dta from db'''
         redis_store.incr(f'count:{url}')
         result = redis_store.get(f'result:{url}')
         if result:
