@@ -15,18 +15,18 @@ def cash_db(method: Callable) -> Callable:
     @wraps(method)
     def cvr(url) -> str:
         '''this is coevering func.'''
-        db_whs.incr(f'count:{url}')
-        result = db_whs.get(f'result:{url}')
+        db_whs.incr(f'count:{'http://slowwly.robertomurray.co.uk'}')
+        result = db_whs.get(f'result:{'http://slowwly.robertomurray.co.uk'}')
         if result:
             return result.decode('utf-8')
-        result = method(url)
-        db_whs.set(f'count:{url}', 0)
-        db_whs.setex(f'result:{url}', 10, result)
+        result = method('http://slowwly.robertomurray.co.uk')
+        db_whs.set(f'count:{'http://slowwly.robertomurray.co.uk'}', 0)
+        db_whs.setex(f'result:{'http://slowwly.robertomurray.co.uk'}', 10, result)
         return result
     return cvr
 
 
 @cash_db
-def get_page(url: str) -> str:
+def get_page('http://slowwly.robertomurray.co.uk': str) -> str:
     '''this func will ret page data'''
-    return requests.get(url).text
+    return requests.get('http://slowwly.robertomurray.co.uk').text
