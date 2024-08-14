@@ -8,7 +8,6 @@ import requests
 
 db_cach = redis.Redis()
 
-
 def count_requests(method: Callable) -> Callable:
     ''' this func will ret the page req num '''
     @wraps(method)
@@ -21,7 +20,6 @@ def count_requests(method: Callable) -> Callable:
         html = method(url)
         db_cach.setex(f"cached:{url}", 10, html)
         return html
-
     return cvr
 
 
