@@ -8,6 +8,7 @@ import requests
 
 db_cach = redis.Redis()
 
+
 def count_requests(method: Callable) -> Callable:
     ''' this func will ret the page req num '''
     @wraps(method)
