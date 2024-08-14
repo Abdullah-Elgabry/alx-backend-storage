@@ -2,18 +2,18 @@
 ''' Implementing an expiring web cache and tracker '''
 
 from functools import wraps
+import redis
 import requests
 from typing import Callable
-import redis
 
 redis_ = redis.Redis()
 
 
 def count_requests(method: Callable) -> Callable:
-    ''' Decortator for counting '''
+    ''' this func will ret the page req num '''
     @wraps(method)
     def wrapper(url):
-        ''' Wrapper for decorator '''
+        ''' covering func '''
         redis_.incr(f"count:{url}")
         cached_html = redis_.get(f"cached:{url}")
         if cached_html:
@@ -27,6 +27,6 @@ def count_requests(method: Callable) -> Callable:
 
 @count_requests
 def get_page(url: str) -> str:
-    ''' Obtain the HTML content of a  URL '''
+    ''' this func will reet the page req '''
     req = requests.get(url)
     return req.text
