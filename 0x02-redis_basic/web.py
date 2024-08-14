@@ -1,31 +1,32 @@
 #!/usr/bin/env python3
-''' Implementing an expiring web cache and tracker...'''
+'''Implementing an expiring web cache and tracker'''
 import redis
 import requests
 from functools import wraps
 from typing import Callable
 
 
-redis_store = redis.Redis()
+db_whs = redis.Redis()
+'''implementing a get_page function'''
 
 
-def data_cacher(method: Callable) -> Callable:
-    '''This func will return the chash dta'''
+def cash_db(method: Callable) -> Callable:
+    '''this func will get data cach'''
     @wraps(method)
-    def invoker(url) -> str:
-        '''This func will return dta from db'''
-        redis_store.incr(f'count:{url}')
-        result = redis_store.get(f'result:{url}')
+    def cvr(url) -> str:
+        '''this is coevering func.'''
+        db_whs.incr(f'count:{url}')
+        result = db_whs.get(f'result:{url}')
         if result:
             return result.decode('utf-8')
         result = method(url)
-        redis_store.set(f'count:{url}', 0)
-        redis_store.setex(f'result:{url}', 10, result)
+        db_whs.set(f'count:{url}', 0)
+        db_whs.setex(f'result:{url}', 10, result)
         return result
-    return invoker
+    return cvr
 
 
-@data_cacher
+@cash_db
 def get_page(url: str) -> str:
-    '''This func will get the brev data'''
+    '''this func will ret page data'''
     return requests.get(url).text
