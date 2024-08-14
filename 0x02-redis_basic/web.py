@@ -9,6 +9,7 @@ import requests
 db_cach = redis.Redis()
 ''' this will hold the func data '''
 
+
 def req_calc(method: Callable) -> Callable:
     ''' this func will ret the page req num '''
     @wraps(method)
