@@ -18,9 +18,9 @@ def count_requests(method: Callable) -> Callable:
         page_dta = db_cach.get(f"cached:{url}")
         if page_dta:
             return page_dta.decode('utf-8')
-        html = method(url)
-        db_cach.setex(f"cached:{url}", 10, html)
-        return html
+        pg_db = method(url)
+        db_cach.setex(f"cached:{url}", 10, pg_db)
+        return pg_db
     return cvr
 
 
