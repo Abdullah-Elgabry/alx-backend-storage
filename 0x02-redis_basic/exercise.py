@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-'''This is an app for Redis basics'''
+'''this is an app for Redis basics'''
 import uuid
 import redis
 from functools import wraps
@@ -7,10 +7,10 @@ from typing import Any, Callable, Union
 
 
 def count_calls(method: Callable) -> Callable:
-    '''This func is for tracking numbers'''
+    '''this func is for tracking numbers'''
     @wraps(method)
     def invoker(self, *args, **kwargs) -> Any:
-        '''This func will an function'''
+        '''this func will an function'''
         if isinstance(self._redis, redis.Redis):
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
@@ -76,11 +76,14 @@ class Cache:
             key: str,
             fn: Callable = None,
             ) -> Union[str, bytes, int, float]:
+        '''geet from db the value'''
         data = self._redis.get(key)
         return fn(data) if fn is not None else data
 
     def get_str(self, key: str) -> str:
+        '''get from db str'''
         return self.get(key, lambda x: x.decode('utf-8'))
 
     def get_int(self, key: str) -> int:
+        '''get from db int'''
         return self.get(key, lambda x: int(x))
