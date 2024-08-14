@@ -9,7 +9,7 @@ import requests
 db_cach = redis.Redis()
 
 
-def count_requests(method: Callable) -> Callable:
+def req_calc(method: Callable) -> Callable:
     ''' this func will ret the page req num '''
     @wraps(method)
     def cvr(url):
@@ -24,7 +24,7 @@ def count_requests(method: Callable) -> Callable:
     return cvr
 
 
-@count_requests
+@req_calc
 def get_page(url: str) -> str:
     ''' this func will reet the page req '''
     req = requests.get(url)
