@@ -13,7 +13,7 @@ def req_calc(method: Callable) -> Callable:
     ''' this func will ret the page req num '''
     @wraps(method)
     def cvr(url):
-        ''' covering func '''
+        ''' covering func that calc the caching '''
         db_cach.incr(f"count:{url}")
         page_dta = db_cach.get(f"caching:{url}")
         if page_dta:
