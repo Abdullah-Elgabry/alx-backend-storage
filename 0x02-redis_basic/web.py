@@ -1,31 +1,31 @@
 #!/usr/bin/env python3
-''' Implementing an expiring web cache and tracker '''
+"""Implementing an expiring web cache and tracker."""
 from typing import Callable
 from functools import wraps
 import redis
 import requests
 
 
-db_cach = redis.Redis()
+db_cache = redis.Redis()
 
 
 def req_calc(method: Callable) -> Callable:
-    ''' this func will ret the page req num '''
+    """Decorator to calculate the number of page requests."""
     @wraps(method)
-    def cvr(url):
-        ''' covering func that calc the caching '''
-        db_cach.incr(f"count:{url}")
-        page_dta = db_cach.get(f"caching:{url}")
-        if page_dta:
-            return page_dta.decode('utf-8')
-        pg_db = method(url)
-        db_cach.setex(f"caching:{url}", 10, pg_db)
-        return pg_db
-    return cvr
+    def wrapper(url):
+        """Wrapper function that calculates caching."""
+        db_cache.incr(f"count:{url}")
+        page_data = db_cache.get(f"cache:{url}")
+        if page_data:
+            return page_data.decode('utf-8')
+        page_content = method(url)
+        db_cache.setex(f"cache:{url}", 10, page_content)
+        return page_content
+    return wrapper
 
 
 @req_calc
 def get_page(url: str) -> str:
-    ''' this func will reet the page req '''
-    req = requests.get(url)
-    return req.text
+    """Function to get the content of a page."""
+    response = requests.get(url)
+    return response.text
