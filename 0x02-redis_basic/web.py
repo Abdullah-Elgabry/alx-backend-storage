@@ -6,20 +6,20 @@ import requests
 from typing import Callable
 import redis
 
-db_wrhs = redis.Redis()
+redis_ = redis.Redis()
 
 
 def count_requests(method: Callable) -> Callable:
-    ''' this func will get the cash from db  '''
+    ''' Decortator for counting '''
     @wraps(method)
     def wrapper(url):
-        ''' covering func '''
-        db_wrhs.incr(f"count:{url}")
-        db_cach = db_wrhs.get(f"cached:{url}")
-        if db_cach:
-            return db_cach.decode('utf-8')
+        ''' Wrapper for decorator '''
+        redis_.incr(f"count:{url}")
+        cached_html = redis_.get(f"cached:{url}")
+        if cached_html:
+            return cached_html.decode('utf-8')
         html = method(url)
-        db_wrhs.setex(f"cached:{url}", 10, html)
+        redis_.setex(f"cached:{url}", 10, html)
         return html
 
     return wrapper
@@ -27,6 +27,6 @@ def count_requests(method: Callable) -> Callable:
 
 @count_requests
 def get_page(url: str) -> str:
-    ''' this will return the page req '''
+    ''' Obtain the HTML content of a  URL '''
     req = requests.get(url)
     return req.text
