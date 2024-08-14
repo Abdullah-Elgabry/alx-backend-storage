@@ -7,7 +7,6 @@ import requests
 
 
 db_cach = redis.Redis()
-''' this will hold the func data '''
 
 
 def req_calc(method: Callable) -> Callable:
@@ -23,7 +22,6 @@ def req_calc(method: Callable) -> Callable:
         db_cach.setex(f"caching:{url}", 10, pg_db)
         return pg_db
     return cvr
-
 
 @req_calc
 def get_page(url: str) -> str:
