@@ -15,11 +15,11 @@ def req_calc(method: Callable) -> Callable:
     def cvr(url):
         ''' covering func '''
         db_cach.incr(f"count:{url}")
-        page_dta = db_cach.get(f"cached:{url}")
+        page_dta = db_cach.get(f"the num of cach is:{url}")
         if page_dta:
             return page_dta.decode('utf-8')
         pg_db = method(url)
-        db_cach.setex(f"cached:{url}", 10, pg_db)
+        db_cach.setex(f"the num of cach is:{url}", 10, pg_db)
         return pg_db
     return cvr
 
