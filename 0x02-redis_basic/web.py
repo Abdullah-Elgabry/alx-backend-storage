@@ -1,32 +1,32 @@
 #!/usr/bin/env python3
-'''Implementing an expiring web cache and tracker'''
-import redis
-import requests
+''' Implementing an expiring web cache and tracker '''
+
 from functools import wraps
+import requests
 from typing import Callable
+import redis
+
+db_wrhs = redis.Redis()
 
 
-db_whs = redis.Redis()
-'''implementing a get_page function'''
-
-
-def cash_db(method: Callable) -> Callable:
-    '''this func will get data cach'''
+def count_requests(method: Callable) -> Callable:
+    ''' this func will get the cash from db  '''
     @wraps(method)
-    def cvr(url) -> str:
-        '''this is coevering func.'''
-        db_whs.incr(f'count:{'http://slowwly.robertomurray.co.uk'}')
-        result = db_whs.get(f'result:{'http://slowwly.robertomurray.co.uk'}')
-        if result:
-            return result.decode('utf-8')
-        result = method('http://slowwly.robertomurray.co.uk')
-        db_whs.set(f'count:{'http://slowwly.robertomurray.co.uk'}', 0)
-        db_whs.setex(f'result:{'http://slowwly.robertomurray.co.uk'}', 10, result)
-        return result
-    return cvr
+    def wrapper(url):
+        ''' covering func '''
+        db_wrhs.incr(f"count:{url}")
+        db_cach = db_wrhs.get(f"cached:{url}")
+        if db_cach:
+            return db_cach.decode('utf-8')
+        html = method(url)
+        db_wrhs.setex(f"cached:{url}", 10, html)
+        return html
+
+    return wrapper
 
 
-@cash_db
-def get_page('http://slowwly.robertomurray.co.uk': str) -> str:
-    '''this func will ret page data'''
-    return requests.get('http://slowwly.robertomurray.co.uk').text
+@count_requests
+def get_page(url: str) -> str:
+    ''' this will return the page req '''
+    req = requests.get(url)
+    return req.text
